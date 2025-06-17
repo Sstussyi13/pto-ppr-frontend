@@ -32,30 +32,36 @@ export default function Services() {
   const [modalContent, setModalContent] = useState(null);
 
   // Загрузка услуг
-  useEffect(() => {
-    axios
-      .get("http://localhost:3000/api/content/services")
-      .then((res) => {
-        const parsed = JSON.parse(res.data.value);
-        setServices(parsed);
-      })
-      .catch((err) => {
-        console.error("Ошибка при загрузке услуг:", err);
-      });
-  }, []);
+  const API_BASE = import.meta.env.VITE_API_BASE;
+
+useEffect(() => {
+  axios
+    .get(`${API_BASE}/content/services`)
+    .then((res) => {
+      const parsed = JSON.parse(res.data.value);
+      setServices(parsed);
+    })
+    .catch((err) => {
+      console.error("Ошибка при загрузке услуг:", err);
+    });
+}, []);
+
 
   // Загрузка таблицы цен
-  useEffect(() => {
-    axios
-      .get("http://localhost:3000/api/content/price_table")
-      .then((res) => {
-        const parsed = JSON.parse(res.data.value);
-        setPrices(parsed);
-      })
-      .catch((err) => {
-        console.error("Ошибка при загрузке таблицы цен:", err);
-      });
-  }, []);
+  const API_BASE = import.meta.env.VITE_API_BASE;
+
+useEffect(() => {
+  axios
+    .get(`${API_BASE}/content/price_table`)
+    .then((res) => {
+      const parsed = JSON.parse(res.data.value);
+      setPrices(parsed);
+    })
+    .catch((err) => {
+      console.error("Ошибка при загрузке таблицы цен:", err);
+    });
+}, []);
+
 
   return (
     <section className="bg-white text-gray-800 py-20 px-4 sm:px-6">

@@ -25,14 +25,17 @@ export default function Contacts() {
   const [serverError, setServerError] = useState("");
   const [contacts, setContacts] = useState(null);
 
-  useEffect(() => {
-    axios
-      .get("http://localhost:3000/api/content/contacts")
-      .then((res) => setContacts(JSON.parse(res.data.value)))
-      .catch((err) =>
-        console.error("Ошибка загрузки контактных данных:", err)
-      );
-  }, []);
+  const API_BASE = import.meta.env.VITE_API_BASE;
+
+useEffect(() => {
+  axios
+    .get(`${API_BASE}/content/contacts`)
+    .then((res) => setContacts(JSON.parse(res.data.value)))
+    .catch((err) =>
+      console.error("Ошибка загрузки контактных данных:", err)
+    );
+}, []);
+
 
   const validate = () => {
     const newErrors = {};
@@ -67,13 +70,16 @@ export default function Contacts() {
       return;
     }
 
-    try {
-      await axios.post("http://localhost:3000/api/requests", form);
-      setSubmitted(true);
-    } catch (error) {
-      setServerError("Ошибка при отправке. Проверьте соединение или повторите позже.");
-      console.error(error);
-    }
+    const API_BASE = import.meta.env.VITE_API_BASE;
+
+try {
+  await axios.post(`${API_BASE}/requests`, form);
+  setSubmitted(true);
+} catch (error) {
+  setServerError("Ошибка при отправке. Проверьте соединение или повторите позже.");
+  console.error(error);
+}
+
   };
 
   return (
