@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import axios from "axios";
+const API_BASE = import.meta.env.VITE_API_BASE;
 
 import {
   PhoneCall,
@@ -30,20 +31,16 @@ export default function Steps() {
     AOS.init({ duration: 800, once: true });
 
     // Загружаем шаги из контента
-    const API_BASE = import.meta.env.VITE_API_BASE;
-
-useEffect(() => {
-  axios
-    .get(`${API_BASE}/content/steps`)
-    .then((res) => {
-      const parsed = JSON.parse(res.data.value);
-      setSteps(parsed);
-    })
-    .catch((err) => {
-      console.error("Ошибка загрузки этапов:", err);
-    });
-}, []);
-
+    axios
+      .get(`${API_BASE}/content/steps`)
+      .then((res) => {
+        const parsed = JSON.parse(res.data.value);
+        setSteps(parsed);
+      })
+      .catch((err) => {
+        console.error("Ошибка загрузки этапов:", err);
+      });
+  }, []);
 
   return (
     <section className="bg-white py-20 px-4 text-gray-800">

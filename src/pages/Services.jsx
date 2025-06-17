@@ -30,10 +30,10 @@ export default function Services() {
   const [services, setServices] = useState([]);
   const [prices, setPrices] = useState([]);
   const [modalContent, setModalContent] = useState(null);
+// ✅ Объявляем ОДИН РАЗ в начале файла
+const API_BASE = import.meta.env.VITE_API_BASE;
 
-  // Загрузка услуг
-  const API_BASE = import.meta.env.VITE_API_BASE;
-
+// Загрузка услуг
 useEffect(() => {
   axios
     .get(`${API_BASE}/content/services`)
@@ -46,10 +46,7 @@ useEffect(() => {
     });
 }, []);
 
-
-  // Загрузка таблицы цен
-  const API_BASE = import.meta.env.VITE_API_BASE;
-
+// Загрузка таблицы цен
 useEffect(() => {
   axios
     .get(`${API_BASE}/content/price_table`)
@@ -61,6 +58,7 @@ useEffect(() => {
       console.error("Ошибка при загрузке таблицы цен:", err);
     });
 }, []);
+
 
 
   return (
