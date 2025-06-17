@@ -54,72 +54,75 @@ export default function AdminPanel() {
     setIsAuthenticated(false);
   };
 
-  // Заявки
-  const fetchRequests = async () => {
-    try {
-      const res = await axios.get("http://localhost:3000/api/requests");
-      setRequests(res.data);
-    } catch (err) {
-      console.error("Ошибка при получении заявок:", err);
-    }
-  };
+  const API_BASE = import.meta.env.VITE_API_BASE;
 
-  useEffect(() => {
-    if (isAuthenticated) fetchRequests();
-  }, [isAuthenticated]);
+// Заявки
+const fetchRequests = async () => {
+  try {
+    const res = await axios.get(`${API_BASE}/requests`);
+    setRequests(res.data);
+  } catch (err) {
+    console.error("Ошибка при получении заявок:", err);
+  }
+};
 
-  const startEdit = (r) => {
-    setEditId(r.id);
-    setEditedRequest({ ...r });
-  };
+useEffect(() => {
+  if (isAuthenticated) fetchRequests();
+}, [isAuthenticated]);
 
-  const saveEdit = async () => {
-    try {
-      await axios.put(`http://localhost:3000/api/requests/${editId}`, {
-        service_type: editedRequest.service_type,
-        message: editedRequest.message,
-      });
-      setEditId(null);
-      fetchRequests();
-    } catch (err) {
-      console.error("Ошибка при обновлении заявки:", err);
-    }
-  };
+const startEdit = (r) => {
+  setEditId(r.id);
+  setEditedRequest({ ...r });
+};
 
-  const deleteRequest = async (id) => {
-    if (!window.confirm("Удалить эту заявку?")) return;
-    try {
-      await axios.delete(`http://localhost:3000/api/requests/${id}`);
-      fetchRequests();
-    } catch (err) {
-      console.error("Ошибка при удалении заявки:", err);
-    }
-  };
+const saveEdit = async () => {
+  try {
+    await axios.put(`${API_BASE}/requests/${editId}`, {
+      service_type: editedRequest.service_type,
+      message: editedRequest.message,
+    });
+    setEditId(null);
+    fetchRequests();
+  } catch (err) {
+    console.error("Ошибка при обновлении заявки:", err);
+  }
+};
 
-  // Контент
-  const fetchContent = async () => {
-    try {
-      const res = await axios.get("http://localhost:3000/api/content/all");
-      const data = res.data.reduce((acc, { key, value }) => {
-        acc[key] = JSON.parse(value);
-        return acc;
-      }, {});
-      setContent(data);
-    } catch (err) {
-      console.error("Ошибка при загрузке контента:", err);
-    }
-  };
+const deleteRequest = async (id) => {
+  if (!window.confirm("Удалить эту заявку?")) return;
+  try {
+    await axios.delete(`${API_BASE}/requests/${id}`);
+    fetchRequests();
+  } catch (err) {
+    console.error("Ошибка при удалении заявки:", err);
+  }
+};
 
-  const updateContent = async (key, value) => {
-    try {
-      await axios.put(`http://localhost:3000/api/content/${key}`, {
-        value: JSON.stringify(value),
-      });
-      fetchContent();
-    } catch (err) {
-      console.error("Ошибка при обновлении контента:", err);
-    }
-  };
+// Контент
+const fetchContent = async () => {
+  try {
+    const res = await axios.get(`${API_BASE}/content/all`);
+    const data = res.data.reduce((acc, { key, value }) => {
+      acc[key] = JSON.parse(value);
+      return acc;
+    }, {});
+    setContent(data);
+  } catch (err) {
+    console.error("Ошибка при загрузке контента:", err);
+  }
+};
+
+const updateContent = async (key, value) => {
+  try {
+    await axios.put(`${API_BASE}/content/${key}`, {
+      value: JSON.stringify(value),
+    });
+    fetchContent();
+  } catch (err) {
+    console.error("Ошибка при обновлении контента:", err);
+  }
+};
+
 
   const handleFileUpload = async (e, idx) => {
     const file = e.target.files[0];
@@ -129,10 +132,10 @@ export default function AdminPanel() {
     formData.append("image", file);
 
     try {
-      const res = await axios.post("http://localhost:3000/api/upload", formData, {
+      const res = await axios.post(`${API_BASE}/upload`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      const imageUrl = `http://localhost:3000/uploads/${res.data.filename}`;
+      const imageUrl = `${API_BASE.replace("/api", "")}/uploads/${res.data.filename}`;
       const updated = [...content.cards];
       updated[idx].image = imageUrl;
       setContent({ ...content, cards: updated });
